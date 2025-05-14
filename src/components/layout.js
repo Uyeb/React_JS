@@ -1,7 +1,9 @@
 import 'antd/dist/reset.css';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Layout, Menu, theme } from 'antd';
 import Projects from '../pages/home/Project';
+
 const { Header, Content, Footer } = Layout;
+
 const items = [
   { key: '1', label: 'Contact us' },
   { key: '2', label: 'Management' },
@@ -10,12 +12,13 @@ const items = [
   { key: '5', label: 'Logout' },
 ];
 
-export function Dashboard(){
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-        } = theme.useToken();
-    return (
-    <Layout>
+export function Dashboard() {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+
+  return (
+    <Layout style={{ height: '100vh' }}>
       <Header
         style={{
           position: 'sticky',
@@ -34,23 +37,22 @@ export function Dashboard(){
           style={{ flex: 1, minWidth: 0 }}
         />
       </Header>
-      <Content style={{ padding: '0 48px' }}>
-        <Breadcrumb style={{ margin: '18px 0' }}>
-        </Breadcrumb>
+
+      <Content style={{ padding: '16px 24px', overflow: 'hidden', flex: 1 }}>
         <div
           style={{
-            padding: 24,
-            minHeight: 480,
             background: colorBgContainer,
+            height: '100%',
+            padding: 16,
             borderRadius: borderRadiusLG,
           }}
         >
-        {/* Nội dung */}
-        <Projects/>
+          <Projects />
         </div>
       </Content>
-      <Footer style={{ textAlign: 'center' }}>
-       
+
+      <Footer style={{ background: colorBgContainer, textAlign: 'center' }}>
+        Ant Design ©{new Date().getFullYear()} Created by Ant UED
       </Footer>
     </Layout>
   );

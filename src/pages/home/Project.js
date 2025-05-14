@@ -1,16 +1,19 @@
 import axios from 'axios';
 import { useRef, useState, useEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-import {  Input, Table } from 'antd';
+import {  Button, Input, Table, theme } from 'antd';
 import Highlighter from 'react-highlight-words';
+import CreateProject from './CreatProject';
 
 export default function Projects() {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([]); 
   const searchInput = useRef(null);
+  const {
+        token: { colorBgContainer, borderRadiusLG },
+        } = theme.useToken();
 
-  useEffect(() => {
   const loadProjects = async () => {
     try {
       const response = await axios.get('http://localhost:3001/data');
@@ -25,8 +28,9 @@ export default function Projects() {
     }
   };
 
-  loadProjects();
-}, []);
+  useEffect(() => {
+    loadProjects();
+  }, []);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -55,7 +59,8 @@ export default function Projects() {
           setTimeout(() => {
             searchInput.current?.select();
           }, 100);
-        }
+        } 
+
       },
     },
     render: text =>
@@ -103,7 +108,24 @@ export default function Projects() {
     
   ];
 
-  return <Table columns={columns} dataSource={data} />;
+  return (
+   <>
+      <CreateProject onProjectCreated={loadProjects}/>
+      <div
+      style={{
+            background: colorBgContainer,
+            minHeight: 280,
+            padding: 24,
+            borderRadius: borderRadiusLG,
+          }}
+      >
+        <Table columns={columns} dataSource={data} scroll={{ x: 'max-content', y: 200 }}/>
+      </div>
+    
+   </>
+
+  )
+  
 }
 
 
