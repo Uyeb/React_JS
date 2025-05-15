@@ -4,6 +4,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import {  Button, Input, Table, theme } from 'antd';
 import Highlighter from 'react-highlight-words';
 import CreateProject from './CreatProject';
+import EditProject from './EditProject';
 
 export default function Projects() {
   const [searchText, setSearchText] = useState('');
@@ -82,7 +83,7 @@ export default function Projects() {
       title: 'Project name',
       dataIndex: 'name',
       key: 'name',
-      width: '30%',
+      width: 300,
       ...getColumnSearchProps('name'),
       sorter: (a, b) => a.name.length - b.name.length,
       sortDirections: ['descend', 'ascend'],
@@ -91,7 +92,7 @@ export default function Projects() {
       title: 'Age ',
       dataIndex: 'age',
       key: 'age',
-      width: '30%',
+      width: 300,
       ...getColumnSearchProps('age'),
       sorter: (a, b) => a.age - b.age,
       sortDirections: ['descend', 'ascend'],
@@ -100,10 +101,22 @@ export default function Projects() {
       title: 'Address ',
       dataIndex: 'address',
       key: 'address',
-      width: '30%',
+      width: 300,
       ...getColumnSearchProps('address'),
       sorter: (a, b) => a.address.length - b.address.length,
       sortDirections: ['descend', 'ascend'],
+    },
+    {
+      title: '',
+      key: 'actions',
+      width: 300,
+      render: (record) => (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
+          <EditProject onProject={record} onProjectCreated={loadProjects}/>
+          <Button type="default" >Delete</Button>
+          
+        </div>
+      ),
     },
     
   ];
@@ -117,9 +130,10 @@ export default function Projects() {
             minHeight: 280,
             padding: 24,
             borderRadius: borderRadiusLG,
+            overflow: 'auto',
           }}
       >
-        <Table columns={columns} dataSource={data} scroll={{ x: 'max-content', y: 200 }}/>
+        <Table columns={columns} dataSource={data} scroll={{ x: 900, y: 200 }}/>
       </div>
     
    </>

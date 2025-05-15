@@ -38,7 +38,7 @@ export function Dashboard() {
         />
       </Header>
 
-      <Content style={{ padding: '16px 24px', overflow: 'hidden', flex: 1 }}>
+      <Content style={{ padding: '16px 24px', flex: 1 }}>
         <div
           style={{
             background: colorBgContainer,
