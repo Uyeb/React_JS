@@ -9,7 +9,7 @@ import EditProject from './EditProject';
 export default function Projects() {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
-  const [data, setData] = useState([]); 
+  const [items, setItems] = useState([]); 
   const searchInput = useRef(null);
   const {
         token: { colorBgContainer, borderRadiusLG },
@@ -17,13 +17,18 @@ export default function Projects() {
 
   const loadProjects = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/data');
-      const listData = response.data.map(item => ({
+      const response = await axios.get('/api/v1/Project',{
+        headers: {
+          Authorization: " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQyNWJkYjFjLTU4MmItNGMyYy1hODc1LTMxYzJlODViZDU2NyIsImZpcnN0TmFtZSI6IkFkbWluIiwibGFzdE5hbWUiOiJNYWxtZSIsImVtYWlsIjoiYWRtaW5AbWFsbWUubmV0IiwidXNlcm5hbWUiOiJhZG1pbkBtYWxtZS5uZXQiLCJyb2xlIjoiYWRtaW4iLCJuYmYiOjE3NDcyNzg5MjAsImV4cCI6MTc0NzMwODkyMCwiaWF0IjoxNzQ3Mjc4OTIwLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjU1MDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjU1MDAifQ.V8Ed6bdP2TaBROC0nhjGMpW8ncBa26BoZbWqrrEc2xU "
+        }
+      });
+      console.log("Raw API response:", response.data)
+      const listItem = response.data.result.items.map(item => ({
         key: item.id,
         ...item
       }));
-      setData(listData);
-      console.log("Formatted data table:", listData);
+      setItems(listItem);
+      console.log("Formatted data table:", listItem);
     } catch (error) {
       console.error('Lỗi khi lấy danh sách dự án từ API:', error);
     }
@@ -89,21 +94,21 @@ export default function Projects() {
       sortDirections: ['descend', 'ascend'],
     },
     {
-      title: 'Age ',
-      dataIndex: 'age',
-      key: 'age',
+      title: 'province ',
+      dataIndex: 'province',
+      key: 'province',
       width: 300,
-      ...getColumnSearchProps('age'),
-      sorter: (a, b) => a.age - b.age,
+      ...getColumnSearchProps('province'),
+      sorter: (a, b) => a.province.length - b.province.length,
       sortDirections: ['descend', 'ascend'],
     },
     {
-      title: 'Address ',
-      dataIndex: 'address',
-      key: 'address',
+      title: 'companyName ',
+      dataIndex: 'companyName',
+      key: 'companyName',
       width: 300,
-      ...getColumnSearchProps('address'),
-      sorter: (a, b) => a.address.length - b.address.length,
+      ...getColumnSearchProps('companyName'),
+      sorter: (a, b) => a.companyName.length - b.companyName.length,
       sortDirections: ['descend', 'ascend'],
     },
     {
@@ -112,8 +117,8 @@ export default function Projects() {
       width: 300,
       render: (record) => (
         <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
-          <EditProject onProject={record} onProjectCreated={loadProjects}/>
-          <Button type="default" >Delete</Button>
+          {/* <EditProject onProject={record} onProjectCreated={loadProjects}/>
+          <Button type="default" >Delete</Button> */}
           
         </div>
       ),
@@ -123,7 +128,7 @@ export default function Projects() {
 
   return (
    <>
-      <CreateProject onProjectCreated={loadProjects}/>
+      {/* <CreateProject onProjectCreated={loadProjects}/> */}
       <div
       style={{
             background: colorBgContainer,
@@ -133,7 +138,7 @@ export default function Projects() {
             overflow: 'auto',
           }}
       >
-        <Table columns={columns} dataSource={data} scroll={{ x: 900, y: 200 }}/>
+        <Table columns={columns} dataSource={items} scroll={{ x: 900, y: 200 }}/>
       </div>
     
    </>
