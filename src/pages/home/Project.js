@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useRef, useState, useEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-import {  Button, Input, Table, theme } from 'antd';
+import {  Button, Input, Table, theme, Popconfirm } from 'antd';
 import Highlighter from 'react-highlight-words';
 import CreateProject from './CreatProject';
 import EditProject from './EditProject';
@@ -83,6 +83,27 @@ export default function Projects() {
   });
 
 
+  
+  const handleDelete = async (record) => {
+    if (!record?.id) {
+      console.error('Không tìm thấy ID project để xóa');
+      return;
+    }
+
+    try {
+      await axios.post(`/api/v1/Project/delete`,[record.id], {
+        headers: {
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQyNWJkYjFjLTU4MmItNGMyYy1hODc1LTMxYzJlODViZDU2NyIsImZpcnN0TmFtZSI6IkFkbWluIiwibGFzdE5hbWUiOiJNYWxtZSIsImVtYWlsIjoiYWRtaW5AbWFsbWUubmV0IiwidXNlcm5hbWUiOiJhZG1pbkBtYWxtZS5uZXQiLCJyb2xlIjoiYWRtaW4iLCJuYmYiOjE3NDcyOTA0OTcsImV4cCI6MTc0NzMyMDQ5NywiaWF0IjoxNzQ3MjkwNDk3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjU1MDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjU1MDAifQ.BBvxHt-3ICk_hb_Cgdcd-eU_D659arjedJwOiM8Ex2U'
+        }
+      });
+      // Sau khi xóa xong, tải lại dữ liệu
+      loadProjects();
+    } catch (error) {
+      console.error('Lỗi khi xóa project:', error);
+    }
+  };
+
+
   const columns = [
     {
       title: 'Project name',
@@ -118,8 +139,15 @@ export default function Projects() {
       render: (record) => (
         <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
           <EditProject onProject={record} onProjectCreated={loadProjects}/>
-          <Button type="default" >Delete</Button>
           
+           <Popconfirm
+              title="Bạn có chắc muốn xóa project này?"
+              onConfirm={() => handleDelete(record)}  // <-- truyền record vào đây
+              okText="Có"
+              cancelText="Không"
+            >
+              <Button type="default">Delete</Button>
+            </Popconfirm>
         </div>
       ),
     },
