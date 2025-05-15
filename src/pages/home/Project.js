@@ -19,10 +19,10 @@ export default function Projects() {
     try {
       const response = await axios.get('/api/v1/Project',{
         headers: {
-          Authorization: " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQyNWJkYjFjLTU4MmItNGMyYy1hODc1LTMxYzJlODViZDU2NyIsImZpcnN0TmFtZSI6IkFkbWluIiwibGFzdE5hbWUiOiJNYWxtZSIsImVtYWlsIjoiYWRtaW5AbWFsbWUubmV0IiwidXNlcm5hbWUiOiJhZG1pbkBtYWxtZS5uZXQiLCJyb2xlIjoiYWRtaW4iLCJuYmYiOjE3NDcyNzg5MjAsImV4cCI6MTc0NzMwODkyMCwiaWF0IjoxNzQ3Mjc4OTIwLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjU1MDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjU1MDAifQ.V8Ed6bdP2TaBROC0nhjGMpW8ncBa26BoZbWqrrEc2xU "
+          'Content-Type': 'application/json',
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQyNWJkYjFjLTU4MmItNGMyYy1hODc1LTMxYzJlODViZDU2NyIsImZpcnN0TmFtZSI6IkFkbWluIiwibGFzdE5hbWUiOiJNYWxtZSIsImVtYWlsIjoiYWRtaW5AbWFsbWUubmV0IiwidXNlcm5hbWUiOiJhZG1pbkBtYWxtZS5uZXQiLCJyb2xlIjoiYWRtaW4iLCJuYmYiOjE3NDcyOTA0OTcsImV4cCI6MTc0NzMyMDQ5NywiaWF0IjoxNzQ3MjkwNDk3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjU1MDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjU1MDAifQ.BBvxHt-3ICk_hb_Cgdcd-eU_D659arjedJwOiM8Ex2U"
         }
       });
-      console.log("Raw API response:", response.data)
       const listItem = response.data.result.items.map(item => ({
         key: item.id,
         ...item
@@ -94,7 +94,7 @@ export default function Projects() {
       sortDirections: ['descend', 'ascend'],
     },
     {
-      title: 'province ',
+      title: 'Province name ',
       dataIndex: 'province',
       key: 'province',
       width: 300,
@@ -103,7 +103,7 @@ export default function Projects() {
       sortDirections: ['descend', 'ascend'],
     },
     {
-      title: 'companyName ',
+      title: 'Company name ',
       dataIndex: 'companyName',
       key: 'companyName',
       width: 300,
@@ -128,7 +128,7 @@ export default function Projects() {
 
   return (
    <>
-      {/* <CreateProject onProjectCreated={loadProjects}/> */}
+      <CreateProject onProjectCreated={loadProjects}/>
       <div
       style={{
             background: colorBgContainer,

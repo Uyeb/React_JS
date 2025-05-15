@@ -72,11 +72,11 @@ const EditProject = ({ onProject, onProjectCreated }) => {
             </Form.Item>
 
             <Form.Item
-                label="Age"
-                name="age"
-                rules={[{ required: true, message: 'Please input your age!' }]}
+                label="province"
+                name="province"
+                rules={[{ required: true, message: 'Please input your province!' }]}
             >
-                <Input placeholder='Input Age'/>
+                <Input placeholder='Input province'/>
             </Form.Item>
 
             <Form.Item

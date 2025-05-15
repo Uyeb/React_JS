@@ -11,20 +11,30 @@ const CreateProject = ({ onProjectCreated }) => {
   };
 
    const handleOk = async () => {
-    try {
-      const values = await form.validateFields();
-      await axios.post('http://localhost:3001/data', values);
-      setIsModalOpen(false);
-      form.resetFields();
+  try {
+    const values = await form.validateFields();
 
-      // Gọi callback để cập nhật danh sách
-      if (onProjectCreated) {
-        onProjectCreated();
+    const formData = new FormData();
+    Object.entries(values).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    await axios.post('/api/v2/Project', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQyNWJkYjFjLTU4MmItNGMyYy1hODc1LTMxYzJlODViZDU2NyIsImZpcnN0TmFtZSI6IkFkbWluIiwibGFzdE5hbWUiOiJNYWxtZSIsImVtYWlsIjoiYWRtaW5AbWFsbWUubmV0IiwidXNlcm5hbWUiOiJhZG1pbkBtYWxtZS5uZXQiLCJyb2xlIjoiYWRtaW4iLCJuYmYiOjE3NDcyOTA0OTcsImV4cCI6MTc0NzMyMDQ5NywiaWF0IjoxNzQ3MjkwNDk3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjU1MDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjU1MDAifQ.BBvxHt-3ICk_hb_Cgdcd-eU_D659arjedJwOiM8Ex2U'
       }
-    } catch (error) {
-      console.error('Lỗi khi thêm project:', error);
+    });
+
+    setIsModalOpen(false);
+    form.resetFields();
+    if (onProjectCreated) {
+      onProjectCreated();
     }
-  };
+  } catch (error) {
+    console.error('Lỗi khi thêm project:', error);
+  }
+};
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -60,19 +70,27 @@ const CreateProject = ({ onProjectCreated }) => {
             </Form.Item>
 
             <Form.Item
-                label="Age"
-                name="age"
-                rules={[{ required: true, message: 'Please input your age!' }]}
+                label="Province name"
+                name="province"
+                rules={[{ required: true, message: 'Please input your province!' }]}
             >
-                <Input placeholder='Input Age'/>
+                <Input placeholder='Input Province name'/>
             </Form.Item>
 
             <Form.Item
-                label="Address"
-                name="address"
-                rules={[{ required: true, message: 'Please input your address!' }]}
+                label="Company name"
+                name="companyName"
+                rules={[{ required: true, message: 'Please input your Company name!' }]}
             >
-                <Input placeholder='Input Addrress'/>
+                <Input placeholder='Input companyName'/>
+            </Form.Item>
+
+            <Form.Item
+                label="Contractor name"
+                name="contractorName"
+                rules={[{ required: true, message: 'Please input your Contractor name!' }]}
+            >
+                <Input placeholder='Input contractorName'/>
             </Form.Item>
         </Form>
         </Modal>
