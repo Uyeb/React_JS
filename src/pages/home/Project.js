@@ -117,8 +117,8 @@ export default function Projects() {
       width: 300,
       render: (record) => (
         <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
-          {/* <EditProject onProject={record} onProjectCreated={loadProjects}/>
-          <Button type="default" >Delete</Button> */}
+          <EditProject onProject={record} onProjectCreated={loadProjects}/>
+          <Button type="default" >Delete</Button>
           
         </div>
       ),
