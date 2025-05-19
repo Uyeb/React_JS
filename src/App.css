@@ -1,0 +1,60 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #1a1a1a; /* Nền tối */
+}
+
+.login-box {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #000;
+}
+
+.forget-password {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.forget-password a {
+  color: #666;
+  font-size: 14px;
+}
+
+.forget-password a:hover {
+  color: #1890ff; /* Màu xanh mặc định của Ant Design */
+}
+
+.ant-form-item-label > label {
+  font-size: 14px;
+  color: #333;
+}
+
+.ant-form-item-label > label::before {
+  content: '* ';
+  color: red; /* Dấu sao đỏ cho trường bắt buộc */
+}
+
+.ant-btn-primary {
+  background-color: #1890ff;
+  border-color: #1890ff;
+  border-radius: 5px;
+  height: 40px;
+}
+
+.ant-input,
+.ant-input-password {
+  border-radius: 5px;
+}

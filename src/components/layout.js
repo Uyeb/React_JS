@@ -1,6 +1,7 @@
 import 'antd/dist/reset.css';
-import { Layout, Menu, theme } from 'antd';
+import { Layout, Menu, theme,  message } from 'antd';
 import Projects from '../pages/home/Project';
+import { useNavigate } from 'react-router-dom';
 
 const { Header, Content, Footer } = Layout;
 
@@ -16,6 +17,22 @@ export function Dashboard() {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+
+  //Logout
+  const navigate = useNavigate(); // Hook để điều hướng
+
+  // Hàm xử lý sự kiện khi người dùng chọn một mục trong menu
+  const handleMenuClick = ({ key }) => {
+    if (key === '5') { // Key của mục "Logout"
+      // Gọi hàm đăng xuất
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      message.success('Đăng xuất thành công!');
+      navigate('/sign-in');
+    }
+  };
+
 
   return (
     <Layout style={{ height: '100vh' }}>
@@ -35,6 +52,7 @@ export function Dashboard() {
           mode="horizontal"
           items={items}
           style={{ flex: 1, minWidth: 0 }}
+          onClick={handleMenuClick}
         />
       </Header>
 

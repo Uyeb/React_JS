@@ -3,8 +3,7 @@ import { useRef, useState, useEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import {  Button, Input, Table, theme, Popconfirm } from 'antd';
 import Highlighter from 'react-highlight-words';
-import CreateProject from './CreatProject';
-import EditProject from './EditProject';
+import ProjectModal from './ProjectModal';
 
 export default function Projects() {
   const [searchText, setSearchText] = useState('');
@@ -15,12 +14,14 @@ export default function Projects() {
         token: { colorBgContainer, borderRadiusLG },
         } = theme.useToken();
 
+  const accessToken = process.env.REACT_APP_ACCESS_TOKEN;
+
   const loadProjects = async () => {
     try {
       const response = await axios.get('/api/v1/Project',{
         headers: {
           'Content-Type': 'application/json',
-          Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQyNWJkYjFjLTU4MmItNGMyYy1hODc1LTMxYzJlODViZDU2NyIsImZpcnN0TmFtZSI6IkFkbWluIiwibGFzdE5hbWUiOiJNYWxtZSIsImVtYWlsIjoiYWRtaW5AbWFsbWUubmV0IiwidXNlcm5hbWUiOiJhZG1pbkBtYWxtZS5uZXQiLCJyb2xlIjoiYWRtaW4iLCJuYmYiOjE3NDcyOTA0OTcsImV4cCI6MTc0NzMyMDQ5NywiaWF0IjoxNzQ3MjkwNDk3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjU1MDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjU1MDAifQ.BBvxHt-3ICk_hb_Cgdcd-eU_D659arjedJwOiM8Ex2U"
+          Authorization: accessToken,
         }
       });
       const listItem = response.data.result.items.map(item => ({
@@ -83,7 +84,7 @@ export default function Projects() {
   });
 
 
-  
+  // Xóa project
   const handleDelete = async (record) => {
     if (!record?.id) {
       console.error('Không tìm thấy ID project để xóa');
@@ -93,10 +94,10 @@ export default function Projects() {
     try {
       await axios.post(`/api/v1/Project/delete`,[record.id], {
         headers: {
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQyNWJkYjFjLTU4MmItNGMyYy1hODc1LTMxYzJlODViZDU2NyIsImZpcnN0TmFtZSI6IkFkbWluIiwibGFzdE5hbWUiOiJNYWxtZSIsImVtYWlsIjoiYWRtaW5AbWFsbWUubmV0IiwidXNlcm5hbWUiOiJhZG1pbkBtYWxtZS5uZXQiLCJyb2xlIjoiYWRtaW4iLCJuYmYiOjE3NDcyOTA0OTcsImV4cCI6MTc0NzMyMDQ5NywiaWF0IjoxNzQ3MjkwNDk3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjU1MDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjU1MDAifQ.BBvxHt-3ICk_hb_Cgdcd-eU_D659arjedJwOiM8Ex2U'
+          Authorization: accessToken,
         }
       });
-      // Sau khi xóa xong, tải lại dữ liệu
+      
       loadProjects();
     } catch (error) {
       console.error('Lỗi khi xóa project:', error);
@@ -137,17 +138,24 @@ export default function Projects() {
       key: 'actions',
       width: 300,
       render: (record) => (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
-          <EditProject onProject={record} onProjectCreated={loadProjects}/>
-          
-           <Popconfirm
-              title="Bạn có chắc muốn xóa project này?"
-              onConfirm={() => handleDelete(record)}  // <-- truyền record vào đây
-              okText="Có"
-              cancelText="Không"
-            >
-              <Button type="default">Delete</Button>
-            </Popconfirm>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', width: '220px' }}>
+          <ProjectModal
+            mode="edit"
+            project={record}
+            onProjectChanged={loadProjects}
+            buttonStyle={{ height: '36px', width: '100%' }}
+          />
+
+          <Popconfirm
+            title="Bạn có chắc muốn xóa project này?"
+            onConfirm={() => handleDelete(record)}
+            okText="Có"
+            cancelText="Không"
+          >
+            <Button type="default" style={{ height: '36px', width: '100%' }}>
+              Delete
+            </Button>
+          </Popconfirm>
         </div>
       ),
     },
@@ -156,7 +164,21 @@ export default function Projects() {
 
   return (
    <>
-      <CreateProject onProjectCreated={loadProjects}/>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '1rem 0' }}>
+        <h2 style={{ margin: 0 }}>List Project</h2>
+        <ProjectModal
+          mode="create"
+          onProjectChanged={loadProjects}
+          buttonStyle={{ height: '36px', width: '130px' }}
+        />
+      </div>
+
+      <Input
+        placeholder="Search"
+        style={{ width: 250, marginBottom: 20,}}
+        allowClear
+      />
+      
       <div
       style={{
             background: colorBgContainer,
