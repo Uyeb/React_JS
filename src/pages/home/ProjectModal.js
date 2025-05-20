@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axiosClient from '../../api/axiosClient';
 import { useState, useEffect } from 'react';
-import { Button, Modal, Form, Input, Typography, Row, Col, Divider } from 'antd';
+import { Button, Modal, Form, Input, Typography, Row, Col, Divider, message } from 'antd';
 
 const { Text } = Typography;
 
@@ -9,8 +9,7 @@ const ProjectModal = ({ project, onProjectChanged, mode = 'create', buttonStyle 
   const [form] = Form.useForm();
 
   const isEdit = mode === 'edit';
-  const accessToken = process.env.REACT_APP_ACCESS_TOKEN;
-
+ 
   useEffect(() => {
     if (isModalOpen && isEdit && project) {
       form.setFieldsValue(project);
@@ -27,23 +26,21 @@ const ProjectModal = ({ project, onProjectChanged, mode = 'create', buttonStyle 
         formData.append(key, value);
       });
 
-      const url = isEdit
-        ? `/api/v2/Project/${project.id}`
-        : '/api/v2/Project';
+      const url = isEdit ? `/api/v2/Project/${project.id}` : '/api/v2/Project';
       const method = isEdit ? 'put' : 'post';
 
-      await axios({
+      await axiosClient({
         method,
         url,
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: accessToken
         }
       });
 
       setIsModalOpen(false);
       form.resetFields();
+      
       if (onProjectChanged) onProjectChanged();
     } catch (error) {
       console.error(`Lỗi khi ${isEdit ? 'cập nhật' : 'tạo'} project:`, error);

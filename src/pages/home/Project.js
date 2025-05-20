@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axiosClient from '../../api/axiosClient';
 import { useRef, useState, useEffect } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-import {  Button, Input, Table, theme, Popconfirm } from 'antd';
+import {  Button, Input, Table, theme, Popconfirm, message } from 'antd';
 import Highlighter from 'react-highlight-words';
 import ProjectModal from './ProjectModal';
 
@@ -14,16 +14,10 @@ export default function Projects() {
         token: { colorBgContainer, borderRadiusLG },
         } = theme.useToken();
 
-  const accessToken = process.env.REACT_APP_ACCESS_TOKEN;
 
   const loadProjects = async () => {
     try {
-      const response = await axios.get('/api/v1/Project',{
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: accessToken,
-        }
-      });
+      const response = await axiosClient.get('/api/v1/Project');
       const listItem = response.data.result.items.map(item => ({
         key: item.id,
         ...item
@@ -92,12 +86,8 @@ export default function Projects() {
     }
 
     try {
-      await axios.post(`/api/v1/Project/delete`,[record.id], {
-        headers: {
-          Authorization: accessToken,
-        }
-      });
-      
+      await axiosClient.post(`/api/v1/Project/delete`,[record.id]);
+       message.success('Xóa thành công!');
       loadProjects();
     } catch (error) {
       console.error('Lỗi khi xóa project:', error);

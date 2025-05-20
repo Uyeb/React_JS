@@ -13,16 +13,13 @@ const LoginForm = () => {
         const res = await axios.post('/api/v1/Auth/sign-in', {
             username: values.username,
             password: values.password,
-        },{
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
+        });
 
     if (res.status === 200 && res.data.success) {
+      console.log("RESPONSE DATA:", res.data);
         // Lưu token vào localStorage
-        localStorage.setItem('accessToken', res.data.accessToken);
-        localStorage.setItem('refreshToken', res.data.refreshToken);
+        localStorage.setItem('accessToken', res.data.result.accessToken);
+        localStorage.setItem('refreshToken', res.data.result.refreshToken);
 
         message.success('Đăng nhập thành công!');
 
