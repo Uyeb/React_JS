@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import axiosClient from '../../api/axiosClient';
 import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, message } from 'antd';
 
@@ -10,7 +10,7 @@ const LoginForm = () => {
 
   const onFinish = async (values) => {
     try {
-        const res = await axios.post('/api/v1/Auth/sign-in', {
+        const res = await axiosClient.post('/api/v1/Auth/sign-in', {
             username: values.username,
             password: values.password,
         });

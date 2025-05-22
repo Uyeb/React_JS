@@ -8,7 +8,6 @@ const axiosClient = axios.create({
   },
 });
 
-// Gắn accessToken vào header nếu có
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
   if (token) {

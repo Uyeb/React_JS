@@ -2,11 +2,14 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 
-const ProtectedRoute = ({ children }) => {
-  // Kiểm tra xem có accessToken trong localStorage không
+// Route bảo vệ: chỉ cho phép truy cập nếu đã đăng nhập
+export const ProtectedRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem('accessToken');
-  
   return isAuthenticated ? children : <Navigate to="/sign-in" replace />;
 };
 
-export default ProtectedRoute;
+// Route công khai: nếu đã đăng nhập thì chuyển hướng sang trang chính
+export const PublicRoute = ({ children }) => {
+  const isAuthenticated = !!localStorage.getItem('accessToken');
+  return isAuthenticated ? <Navigate to="/" replace /> : children;
+};
