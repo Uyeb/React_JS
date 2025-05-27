@@ -102,7 +102,7 @@ export default function Projects() {
     const updatedSearch = { ...searchTextColumn, [dataIndex]: value };
 
     setSearchTextColumn(updatedSearch);
-    setSearchText(""); // Reset global search
+    setSearchText(undefined); // Reset global search
 
     const filters = Object.entries(updatedSearch)
       .filter(([_, val]) => val)
@@ -111,6 +111,14 @@ export default function Projects() {
     loadProjects("", 1, pagination.pageSize, sorter, filters);
   };
 
+	useEffect(()=> {
+		if (searchText !== undefined) {
+			setSearchTextColumn({});
+			setFilteredInfo({});
+			loadProjects(searchText, 1, pagination.pageSize, sorter, []);
+		}
+	}, [searchText])
+	
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
@@ -253,13 +261,7 @@ export default function Projects() {
         style={{ width: 250, marginBottom: 20 }}
         allowClear
         value={searchText}
-        onChange={(e) => {
-          const value = e.target.value;
-          setSearchText(value);
-          setSearchTextColumn({});
-          setFilteredInfo({});
-          loadProjects(value, 1, pagination.pageSize, sorter, []);
-        }}
+        onChange={(e) => setSearchText(e.target.value)}
       />
 
       <div
