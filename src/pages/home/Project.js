@@ -3,13 +3,14 @@ import { useRef, useState, useEffect } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Table, theme, Popconfirm, message } from "antd";
 import ProjectModal from "./ProjectModal";
+import { FilterDropdownProps } from 'antd/es/table/interface';
 
 export default function Projects() {
   const [items, setItems] = useState([]);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 20 });
   const [sorter, setSorter] = useState([]);
   const [filteredInfo, setFilteredInfo] = useState({});
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState();
   const [searchTextColumn, setSearchTextColumn] = useState({});
   const searchInput = useRef(null);
 
@@ -96,8 +97,8 @@ export default function Projects() {
     loadProjects(searchText, page, size, newSorter, columnFilters);
   };
 
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
+  const handleSearch = (close, selectedKeys, confirm, dataIndex) => {
+    close();
     const value = selectedKeys[0] || "";
     const updatedSearch = { ...searchTextColumn, [dataIndex]: value };
 
@@ -120,7 +121,7 @@ export default function Projects() {
 	}, [searchText])
 	
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => (
+    filterDropdown: ({ close, setSelectedKeys, selectedKeys, confirm }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
@@ -129,7 +130,7 @@ export default function Projects() {
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          onPressEnter={() => handleSearch(close, selectedKeys, confirm, dataIndex)}
           style={{ marginBottom: 8, display: "block" }}
         />
       </div>
