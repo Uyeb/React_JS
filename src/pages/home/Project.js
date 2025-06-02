@@ -3,7 +3,6 @@ import { useRef, useState, useEffect } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Table, theme, Popconfirm, message } from "antd";
 import ProjectModal from "./ProjectModal";
-import { FilterDropdownProps } from 'antd/es/table/interface';
 
 export default function Projects() {
   const [items, setItems] = useState([]);
@@ -13,6 +12,7 @@ export default function Projects() {
   const [searchText, setSearchText] = useState();
   const [searchTextColumn, setSearchTextColumn] = useState({});
   const searchInput = useRef(null);
+  const [debounceText, setDebounceText] = useState("");
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -68,7 +68,7 @@ export default function Projects() {
     const page = paginationInfo.current;
     const size = paginationInfo.pageSize;
     let newSorter = [];
-    
+
     if (Array.isArray(sorterInfo)) {
       newSorter = sorterInfo.map((s) => ({
         key: s.field,
@@ -97,7 +97,7 @@ export default function Projects() {
     loadProjects(searchText, page, size, newSorter, columnFilters);
   };
 
-  const handleSearch = (close, selectedKeys, confirm, dataIndex) => {
+  const handleSearch = (close, selectedKeys, dataIndex) => {
     close();
     const value = selectedKeys[0] || "";
     const updatedSearch = { ...searchTextColumn, [dataIndex]: value };
@@ -112,29 +112,42 @@ export default function Projects() {
     loadProjects("", 1, pagination.pageSize, sorter, filters);
   };
 
-	useEffect(()=> {
-		if (searchText !== undefined) {
-			setSearchTextColumn({});
-			setFilteredInfo({});
-			loadProjects(searchText, 1, pagination.pageSize, sorter, []);
-		}
-	}, [searchText])
-	
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebounceText(searchText);
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [searchText]);
+
+  useEffect(() => {
+    if (searchText !== undefined) {
+      setSearchTextColumn({});
+      setFilteredInfo({});
+      loadProjects(debounceText, 1, pagination.pageSize, sorter, []);
+    }
+  }, [debounceText]);
+
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ close, setSelectedKeys, selectedKeys, confirm }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-        <Input
-          ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() => handleSearch(close, selectedKeys, confirm, dataIndex)}
-          style={{ marginBottom: 8, display: "block" }}
-        />
-      </div>
-    ),
+    filterDropdown: ({ close, setSelectedKeys, selectedKeys }) => {
+      const currentSearchText = searchTextColumn[dataIndex] || "";
+
+      return (
+        <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+          <Input
+            ref={searchInput}
+            placeholder={`Search ${dataIndex}`}
+            value={selectedKeys[0] ?? currentSearchText}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => handleSearch(close, selectedKeys, dataIndex)}
+            style={{ marginBottom: 8, display: "block" }}
+          />
+        </div>
+      );
+    },
+
     filterIcon: (filtered) => (
       <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
     ),
